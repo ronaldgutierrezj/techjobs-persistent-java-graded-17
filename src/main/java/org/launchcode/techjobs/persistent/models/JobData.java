@@ -1,6 +1,7 @@
 package org.launchcode.techjobs.persistent.models;
 
 import java.util.ArrayList;
+import java.util.List;
 
 // This is a change made in sandbox.
 
@@ -21,7 +22,7 @@ public class JobData {
      * @param allJobs The list of jobs to search.
      * @return List of all jobs matching the criteria.
      */
-    public static ArrayList<Job> findByColumnAndValue(String column, String value, Iterable<Job> allJobs) {
+    public static ArrayList<Job> findByColumnAndValue(String column, String value, Iterable<Job> allJobs, Iterable<Skill>allSkills) {
 
         ArrayList<Job> results = new ArrayList<>();
 
@@ -33,6 +34,16 @@ public class JobData {
             results = findByValue(value, allJobs);
             return results;
         }
+
+        if(column.equals("skill")){
+            for (Skill skill : allSkills){
+                if(skill.getName().toLowerCase().equals(value.toLowerCase())){
+                    results.addAll(skill.getJobs());
+                    return results;
+                }
+            }
+        }
+
         for (Job job : allJobs) {
 
             String aValue = getFieldValue(job, column);
@@ -49,10 +60,8 @@ public class JobData {
         String theValue;
         if (fieldName.equals("name")){
             theValue = job.getName();
-        } else if (fieldName.equals("employer")){
-            theValue = job.getEmployer().toString();
-        } else {
-            theValue = job.getSkills().toString();
+        } else{
+            theValue = job.getEmployer().getName();
         }
 
         return theValue;
@@ -74,10 +83,16 @@ public class JobData {
 
             if (job.getName().toLowerCase().contains(value.toLowerCase())) {
                 results.add(job);
-            } else if (job.getEmployer().toString().toLowerCase().contains(value.toLowerCase())) {
+            } else if (job.getEmployer().getName().toLowerCase().contains(value.toLowerCase())) {
                 results.add(job);
-            } else if (job.getSkills().toString().toLowerCase().contains(value.toLowerCase())) {
-                results.add(job);
+            } else{
+                List<Skill> skills = job.getSkills();
+                for (Skill skill : skills){
+                    if(skill.getName().toLowerCase().contains(value.toLowerCase())){
+                        results.add(job);
+                    }
+            }
+
             }
 
         }
