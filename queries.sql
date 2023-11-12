@@ -8,5 +8,5 @@
 SELECT name FROM employer
 where location = "St. Louis City";
 --Part 3
-
+ DROP TABLE job;
 --Part 4
